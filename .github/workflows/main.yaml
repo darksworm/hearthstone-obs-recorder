@@ -37,7 +37,7 @@ jobs:
       - name: get project version
         id: built-version
         shell: pwsh
-        run: echo ::set-output name=version::$((Get-Item .\RecorderPlugin.dll).VersionInfo.ProductVersion)
+        run: echo ::set-output name=version::$((Get-Item .\RecorderPlugin\bin\Release\RecorderPlugin.dll).VersionInfo.ProductVersion)
      
       - name: get latest release version
         id: previous-version
