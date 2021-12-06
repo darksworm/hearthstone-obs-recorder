@@ -17,9 +17,11 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '6.0.x'
 
-      - run: dotnet build -c Release
+      - run: nuget restore
+
+      - run: dotnet build -c Release -p:RestorePackagesConfig=true
 
       - name: squish all DLLs into one
         run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly bin\Release\RecorderPlugin.dll --include bin\Release\*.dll --exclude bin\Release\RecorderPlugin.dll .\RecorderPlugin.dll
