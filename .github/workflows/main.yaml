@@ -49,8 +49,18 @@ jobs:
       - name: create new release
         if: ${{ steps.previous-version.outputs.tag }} < ${{ steps.built-version.outputs.version }}
         uses: actions/create-release@v1
+        id: release
         with:
           tag_name: ${{ steps.built-version.outputs.version }}
           release_name: Version ${{ steps.built-version.outputs.version }}
           draft: true
           prerelease: false
+
+      - name: upload release assets
+        if: ${{ steps.previous-version.outputs.tag }} < ${{ steps.built-version.outputs.version }}
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }} 
+          asset_path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+          asset_name: Recorder.dll
+          asset_content_type: application/octet-stream
