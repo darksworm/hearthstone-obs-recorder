@@ -24,10 +24,10 @@ jobs:
       - run: dotnet build -c Release
 
       - name: squish all DLLs into one
-        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly bin\Release\RecorderPlugin.dll --include bin\Release\*.dll --exclude bin\Release\RecorderPlugin.dll --overwrite
+        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly .\RecorderPlugin\bin\Release\RecorderPlugin.dll --include .\RecorderPlugin\bin\Release\*.dll --exclude .\RecorderPlugin\bin\Release\RecorderPlugin.dll --overwrite
 
       - name: upload built DLL
         uses: actions/upload-artifact@v2
         with:
           name: RecorderPlugin.dll
-          path: .\bin\Release\RecorderPlugin.dll
+          path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
