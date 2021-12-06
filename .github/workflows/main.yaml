@@ -21,7 +21,7 @@ jobs:
 
       - run: nuget restore
 
-      - run: dotnet build -c Release -p:RestorePackagesConfig=true
+      - run: dotnet build -c Release
 
       - name: squish all DLLs into one
         run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly bin\Release\RecorderPlugin.dll --include bin\Release\*.dll --exclude bin\Release\RecorderPlugin.dll .\RecorderPlugin.dll
