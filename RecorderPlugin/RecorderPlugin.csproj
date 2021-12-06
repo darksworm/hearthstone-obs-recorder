@@ -81,7 +81,6 @@
     <Compile Include="SettingStore.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".github\workflows\main.yaml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
