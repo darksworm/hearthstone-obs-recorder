@@ -7,6 +7,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+        with: 
+          fetch-depth: 0
 
       - uses: suisei-cn/actions-download-file@v1
         with:
@@ -31,3 +33,24 @@ jobs:
         with:
           name: RecorderPlugin.dll
           path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+
+      - name: get project version
+        uses: kzrnm/get-net-sdk-project-versions-action@v1
+        id: built-version
+        with:
+          proj-path: RecorderPlugin/RecorderPlugin.csproj
+     
+      - name: get latest release version
+        id: previous-version
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.0.0
+
+      - name: create new release
+        if: ${{ steps.previous-version.outputs.tag }} < ${{ steps.built-version.outputs.version }}
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.built-version.outputs.version }}
+          release_name: Version ${{ steps.built-version.outputs.version }}
+          draft: true
+          prerelease: false
