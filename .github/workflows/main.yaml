@@ -35,7 +35,6 @@ jobs:
           path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
 
       - name: get project version
-        uses: kzrnm/get-net-sdk-project-versions-action@v1
         id: built-version
         shell: pwsh
         run: echo ::set-output name=version::$((Get-Item .\RecorderPlugin.dll).VersionInfo.ProductVersion)
