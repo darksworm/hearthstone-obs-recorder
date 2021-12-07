@@ -1,6 +1,6 @@
 ﻿on:
   push:
-    branches: [master, ci]
+    branches: [master]
 
 jobs:
   build:
@@ -48,7 +48,7 @@ jobs:
         id: previous-version
         uses: pozetroninc/github-action-get-latest-release@master
         with:
-          fallback: 0.0.0.0
+          repository: ${{ github.repository }}
 
       - name: compare built version vs previous released version
         id: version-comparison
