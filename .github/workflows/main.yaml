@@ -46,7 +46,7 @@ jobs:
      
       - name: get latest release version
         id: previous-version
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        uses: pozetroninc/github-action-get-latest-release@master
         with:
           fallback: 0.0.0.0
 
@@ -54,7 +54,7 @@ jobs:
         id: version-comparison
         shell: pwsh
         env:
-          PreviousVersion: ${{ steps.previous-version.outputs.tag }}
+          PreviousVersion: ${{ steps.previous-version.outputs.release }}
           BuiltVersion: ${{ steps.built-version.outputs.version }}
         run: |
           $IsGreater = ([System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion") ? 1 : 0
