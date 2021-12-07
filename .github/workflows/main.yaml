@@ -57,11 +57,11 @@ jobs:
           PreviousVersion: ${{ steps.previous-version.outputs.tag }}
           BuiltVersion: ${{ steps.built-version.outputs.version }}
         run: |
-          $IsGreater = [System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion"
+          $IsGreater = ([System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion") ? 1 : 0
           echo "::set-output name=greater::$IsGreater"
 
       - name: create new release
-        if: steps.version-comparison.outputs.greater == "True"
+        if: steps.version-comparison.outputs.greater
         uses: actions/create-release@v1
         id: release
         env:
@@ -73,7 +73,7 @@ jobs:
           prerelease: false
 
       - name: upload release assets
-        if: steps.version-comparison.outputs.greater == "True"
+        if: steps.version-comparison.outputs.greater
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
