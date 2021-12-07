@@ -1,6 +1,6 @@
 ﻿on:
   push:
-    branches: [master, ci]
+    branches: [master]
 
 jobs:
   build:
@@ -12,8 +12,6 @@ jobs:
       HDTZipName: Hearthstone.Deck.Tracker-v1.16.10.zip
     steps:
       - uses: actions/checkout@v2
-        with: 
-          fetch-depth: 0
 
       - uses: suisei-cn/actions-download-file@v1
         with:
