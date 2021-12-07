@@ -5,6 +5,11 @@
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      DLLPath: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+      BuildDir: .\RecorderPlugin\bin\Release
+      HDTDownloadURL: https://github.com/HearthSim/Hearthstone-Deck-Tracker/releases/download/v1.16.10/Hearthstone.Deck.Tracker-v1.16.10.zip
+      HDTZipName: Hearthstone.Deck.Tracker-v1.16.10.zip
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -12,10 +17,10 @@ jobs:
 
       - uses: suisei-cn/actions-download-file@v1
         with:
-          url: "https://github.com/HearthSim/Hearthstone-Deck-Tracker/releases/download/v1.16.10/Hearthstone.Deck.Tracker-v1.16.10.zip"
+          url: ${env.HDTDownloadURL}
 
       - name: extract HDT
-        run: 7z x Hearthstone.Deck.Tracker-v1.16.10.zip
+        run: 7z x ${env.HDTZipName}
 
       - uses: actions/setup-dotnet@v1
         with:
@@ -26,7 +31,7 @@ jobs:
       - run: dotnet build -c Release
 
       - name: squish all DLLs into one
-        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly .\RecorderPlugin\bin\Release\RecorderPlugin.dll --include .\RecorderPlugin\bin\Release\*.dll --exclude .\RecorderPlugin\bin\Release\RecorderPlugin.dll --overwrite
+        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly $DLLPath --include $BuildDir\*.dll --exclude $DLLPath --overwrite
 
       - name: upload built DLL
         uses: actions/upload-artifact@v2
@@ -52,7 +57,7 @@ jobs:
           PreviousVersion: ${{ steps.previous-version.outputs.tag }}
           BuiltVersion: ${{ steps.built-version.outputs.version }}
         run: |
-          $IsGreater = [System.Version]"$BuiltVersion" -gt [System.Version]"$PreviousVersion"
+          $IsGreater = [System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion"
           echo "::set-output name=greater::$IsGreater"
 
       - name: create new release
