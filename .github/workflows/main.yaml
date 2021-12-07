@@ -45,8 +45,13 @@ jobs:
         with:
           fallback: 0.0.0.0
 
+      - name: compare built version vs previous released version
+        id: version-comparison
+        shell: pwsh
+        run: echo "::set-output name=greater::$([System.Version]\"${{ steps.built-version.outputs.version }}\" -gt [System.Version]\"${{ steps.previous-version.outputs.tag }}\")"
+
       - name: create new release
-        if: ${{ steps.previous-version.outputs.tag }} < ${{ steps.built-version.outputs.version }}
+        if: ${{ steps.version-comparison.outputs.greater }} == "True"
         uses: actions/create-release@v1
         id: release
         env:
@@ -58,7 +63,7 @@ jobs:
           prerelease: false
 
       - name: upload release assets
-        if: ${{ steps.previous-version.outputs.tag }} < ${{ steps.built-version.outputs.version }}
+        if: ${{ steps.version-comparison.outputs.greater }} == "True"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
