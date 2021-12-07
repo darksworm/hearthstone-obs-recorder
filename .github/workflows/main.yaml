@@ -52,7 +52,7 @@ jobs:
           repository: ${{ github.repository }}
 
       - name: fallback version
-        if: steps.previous-version.outcome == "failure"
+        if: steps.previous-version.outcome == 'failure'
         run: echo "::set-output name=version::0.0.0.0"
         
       - name: compare built version vs previous released version
