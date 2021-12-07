@@ -197,3 +197,5 @@ FakesAssemblies/
 /.idea
 
 .idea/
+/Hearthstone Deck Tracker
+/nuget.exe

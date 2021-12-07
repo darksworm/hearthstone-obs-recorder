@@ -1,0 +1,84 @@
+﻿on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      DLLPath: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+      BuildDir: .\RecorderPlugin\bin\Release
+      HDTDownloadURL: https://github.com/HearthSim/Hearthstone-Deck-Tracker/releases/download/v1.16.10/Hearthstone.Deck.Tracker-v1.16.10.zip
+      HDTZipName: Hearthstone.Deck.Tracker-v1.16.10.zip
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: suisei-cn/actions-download-file@v1
+        with:
+          url: ${{ env.HDTDownloadURL }}
+
+      - name: extract HDT
+        run: 7z x ${{ env.HDTZipName }}
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - run: nuget restore
+
+      - run: dotnet build -c Release
+
+      - name: squish all DLLs into one
+        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly $Env:DLLPath --include $Env:BuildDir\*.dll --exclude $Env:DLLPath --overwrite
+
+      - name: upload built DLL
+        uses: actions/upload-artifact@v2
+        with:
+          name: RecorderPlugin.dll
+          path: ${{ env.DLLPath }}
+
+      - name: get project version
+        id: built-version
+        shell: pwsh
+        run: echo "::set-output name=version::$((Get-Item $Env:DLLPath).VersionInfo.ProductVersion)"
+        
+      - name: get latest release version
+        id: previous-version
+        continue-on-error: true
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: ${{ github.repository }}
+        
+      - name: compare built version vs previous released version
+        if: steps.previous-version.outcome != 'failure'
+        id: version-comparison
+        shell: pwsh
+        env:
+          PreviousVersion: ${{ steps.previous-version.outputs.release }}
+          BuiltVersion: ${{ steps.built-version.outputs.version }}
+        run: |
+          $IsGreater = ([System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion") ? 1 : 0
+          echo "::set-output name=greater::$IsGreater"
+
+      - name: create new release
+        if: steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
+        uses: actions/create-release@v1
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.built-version.outputs.version }}
+          release_name: Version ${{ steps.built-version.outputs.version }}
+          draft: true
+          prerelease: false
+
+      - name: upload release assets
+        if: steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }} 
+          asset_path: ${{ env.DLLPath }}
+          asset_name: Recorder.dll
+          asset_content_type: application/octet-stream
