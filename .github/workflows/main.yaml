@@ -48,7 +48,12 @@ jobs:
       - name: compare built version vs previous released version
         id: version-comparison
         shell: pwsh
-        run: echo "::set-output name=greater::$([System.Version]\"${{ steps.built-version.outputs.version }}\" -gt [System.Version]\"${{ steps.previous-version.outputs.tag }}\")"
+        env:
+          PreviousVersion: ${{ steps.previous-version.outputs.tag }}
+          BuiltVersion: ${{ steps.built-version.outputs.version }}
+        run: |
+          $IsGreater = [System.Version]"$BuiltVersion" -gt [System.Version]"$PreviousVersion"
+          echo "::set-output name=greater::$IsGreater"
 
       - name: create new release
         if: ${{ steps.version-comparison.outputs.greater }} == "True"
