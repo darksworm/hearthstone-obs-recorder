@@ -17,10 +17,10 @@ jobs:
 
       - uses: suisei-cn/actions-download-file@v1
         with:
-          url: ${env.HDTDownloadURL}
+          url: ${{ env.HDTDownloadURL }}
 
       - name: extract HDT
-        run: 7z x ${env.HDTZipName}
+        run: 7z x ${{ env.HDTZipName }}
 
       - uses: actions/setup-dotnet@v1
         with:
@@ -31,18 +31,18 @@ jobs:
       - run: dotnet build -c Release
 
       - name: squish all DLLs into one
-        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly $DLLPath --include $BuildDir\*.dll --exclude $DLLPath --overwrite
+        run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly $Env:DLLPath --include $Env:BuildDir\*.dll --exclude $Env:DLLPath --overwrite
 
       - name: upload built DLL
         uses: actions/upload-artifact@v2
         with:
           name: RecorderPlugin.dll
-          path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+          path: $Env:DLLPath
 
       - name: get project version
         id: built-version
         shell: pwsh
-        run: echo "::set-output name=version::$((Get-Item .\RecorderPlugin\bin\Release\RecorderPlugin.dll).VersionInfo.ProductVersion)"
+        run: echo "::set-output name=version::$((Get-Item $Env:DLLPath).VersionInfo.ProductVersion)"
      
       - name: get latest release version
         id: previous-version
@@ -79,6 +79,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }} 
-          asset_path: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
+          asset_path: $Env:DLLPath
           asset_name: Recorder.dll
           asset_content_type: application/octet-stream
