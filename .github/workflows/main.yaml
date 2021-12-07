@@ -60,8 +60,6 @@ jobs:
           $IsGreater = [System.Version]"$Env:BuiltVersion" -gt [System.Version]"$Env:PreviousVersion"
           echo "::set-output name=greater::$IsGreater"
 
-      - run: echo ${{ steps.version-comparison.outputs.greater == "False" }}
-
       - name: create new release
         if: steps.version-comparison.outputs.greater == "True"
         uses: actions/create-release@v1
