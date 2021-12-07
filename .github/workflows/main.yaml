@@ -79,6 +79,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }} 
-          asset_path: $Env:DLLPath
+          asset_path: ${{ env.DLLPath }}
           asset_name: Recorder.dll
           asset_content_type: application/octet-stream
