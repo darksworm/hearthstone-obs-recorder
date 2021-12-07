@@ -41,16 +41,20 @@ jobs:
 
       - name: get project version
         id: built-version
-        continue-on-error: true
         shell: pwsh
         run: echo "::set-output name=version::$((Get-Item $Env:DLLPath).VersionInfo.ProductVersion)"
-     
+        
       - name: get latest release version
         id: previous-version
+        continue-on-error: true
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           repository: ${{ github.repository }}
 
+      - name: fallback version
+        if: steps.previous-version.outcome == "failure"
+        run: echo "::set-output name=version::0.0.0.0"
+        
       - name: compare built version vs previous released version
         id: version-comparison
         shell: pwsh
