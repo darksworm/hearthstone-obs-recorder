@@ -8,11 +8,12 @@ namespace RecorderPlugin
 {
     public class RecorderPlugin : IPlugin
     {
+        private const int DELAY_AFTER_GAME_END_SECONDS = 10;
+
         private readonly Recorder Recorder = new Recorder();
         private readonly SettingsDialog SettingsDialog;
         private readonly SettingStore SettingStore = new SettingStore();
 
-        private const int DELAY_AFTER_GAME_END_SECONDS = 10;
         public string ButtonText => "Settings";
         public string Name => "Hearthstone OBS recorder";
         public string Author => "darksworm";
