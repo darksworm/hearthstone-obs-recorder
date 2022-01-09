@@ -65,7 +65,7 @@ namespace RecorderPlugin
 
         internal void Update()
         {
-            if (NextStopTime > 0 && Timestamp > NextStopTime || Hearthstone_Deck_Tracker.API.Core.Game.IsInMenu)
+            if (NextStopTime > 0 && (Timestamp > NextStopTime || Hearthstone_Deck_Tracker.API.Core.Game.IsInMenu))
             {
                 NextStopTime = 0;
                 StopRecording();
