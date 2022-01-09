@@ -11,6 +11,8 @@ namespace RecorderPlugin
 
         OBSWebsocket OBS = new OBSWebsocket();
 
+        private long NextStopTime = 0;
+
         private string ConnectionString = String.Empty;
         private string Password = String.Empty;
 
@@ -39,23 +41,45 @@ namespace RecorderPlugin
 
         internal void StartRecording()
         {
+            if (NextStopTime > 0)
+            {
+                NextStopTime = 0;                
+                StopRecording();
+            }
+
             if (OBS.IsConnected)
             {
                 OBS.StartRecording();
             }
         }
 
-        internal void StopRecording()
+        internal void StopAfter(long millis)
         {
-            if (OBS.IsConnected)
-            {
-                OBS.StopRecording();
-            }
+            NextStopTime = Timestamp + millis;
         }
 
         internal void Unload()
         {
             OBS.Disconnect();
+        }
+
+        internal void Update()
+        {
+            if (NextStopTime > 0 && Timestamp > NextStopTime || Hearthstone_Deck_Tracker.API.Core.Game.IsInMenu)
+            {
+                NextStopTime = 0;
+                StopRecording();
+            }
+        }
+
+        private long Timestamp => new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+
+        private void StopRecording()
+        {
+            if (OBS.IsConnected && OBS.GetRecordingStatus().IsRecording)
+            {
+                OBS.StopRecording();
+            }
         }
     }
 }

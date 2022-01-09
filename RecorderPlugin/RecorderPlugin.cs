@@ -12,6 +12,7 @@ namespace RecorderPlugin
         private readonly SettingsDialog SettingsDialog;
         private readonly SettingStore SettingStore = new SettingStore();
 
+        private const int DELAY_AFTER_GAME_END_SECONDS = 10;
         public string ButtonText => "Settings";
         public string Name => "Hearthstone OBS recorder";
         public string Author => "darksworm";
@@ -72,11 +73,11 @@ namespace RecorderPlugin
 
         public void OnLoad()
         {
-            GameEvents.OnGameEnd.Add(Recorder.StopRecording);
+            GameEvents.OnGameEnd.Add(() => Recorder.StopAfter(DELAY_AFTER_GAME_END_SECONDS));
             GameEvents.OnGameStart.Add(Recorder.StartRecording);
             Connect();
         }
-
+        
         public void OnUnload()
         {
             Recorder.Unload();
@@ -84,7 +85,7 @@ namespace RecorderPlugin
 
         public void OnUpdate()
         {
-            // do nothing
+            Recorder.Update();
         }
 
         public void OnButtonPress()
