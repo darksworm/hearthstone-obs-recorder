@@ -101,11 +101,6 @@ namespace RecorderPlugin
             SettingsDialog.Focus();
         }
 
-        public Version Version
-        {
-            get { return new Version(0, 0, 2); }
-        }
-
         private static class Toasts
         {
             public static System.Windows.Controls.UserControl MakeSuccessToast(string message)
