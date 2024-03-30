@@ -32,7 +32,7 @@ jobs:
         run: packages\LibZ.Tool.1.2.0.0\tools\libz.exe inject-dll --assembly $Env:DLLPath --include $Env:BuildDir\*.dll --exclude $Env:DLLPath --overwrite
 
       - name: upload built DLL
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: RecorderPlugin.dll
           path: ${{ env.DLLPath }}
@@ -82,10 +82,3 @@ jobs:
           asset_path: ${{ env.DLLPath }}
           asset_name: Recorder.dll
           asset_content_type: application/octet-stream
-          
-      - name: upload pre-release build
-        if: steps.version-comparison.outputs.greater != 1
-        uses: actions/upload-artifact@v4
-        with:
-          name: Recorder.dll
-          path: ${{ env.DLLPath }}
