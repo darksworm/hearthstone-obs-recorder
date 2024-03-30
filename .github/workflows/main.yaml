@@ -73,7 +73,7 @@ jobs:
           prerelease: false
 
       - name: upload release assets
-        if: true || steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
+        if: steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,3 +82,10 @@ jobs:
           asset_path: ${{ env.DLLPath }}
           asset_name: Recorder.dll
           asset_content_type: application/octet-stream
+          
+      - name: upload pre-release build
+        if: steps.version-comparison.outputs.greater != 1
+        uses: actions/upload-artifact@4
+        with:
+          name: Recorder.dll
+          path: ${{ env.DLLPath }}
