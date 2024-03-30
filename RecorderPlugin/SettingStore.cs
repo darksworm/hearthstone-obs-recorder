@@ -7,10 +7,7 @@ namespace RecorderPlugin
 {
     internal class SettingStore
     {
-        private string DataDir
-        {
-            get { return Path.Combine(HDT.Config.Instance.DataDir, "OBSRecorder"); }
-        }
+        private string DataDir => Path.Combine(HDT.Config.Instance.DataDir, "OBSRecorder");
 
         private readonly string ConfigFile = "OBSRecorder.json";
 
@@ -36,6 +33,7 @@ namespace RecorderPlugin
             }
             catch (Exception)
             {
+                // ignored
             }
 
             return null;

@@ -49,7 +49,7 @@ namespace RecorderPlugin
 
             if (OBS.IsConnected)
             {
-                OBS.StartRecording();
+                OBS.StartRecord();
             }
         }
 
@@ -76,9 +76,9 @@ namespace RecorderPlugin
 
         private void StopRecording()
         {
-            if (OBS.IsConnected && OBS.GetRecordingStatus().IsRecording)
+            if (OBS.IsConnected && OBS.GetRecordStatus().IsRecording)
             {
-                OBS.StopRecording();
+                OBS.StopRecord();
             }
         }
     }
