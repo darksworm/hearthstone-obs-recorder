@@ -85,7 +85,7 @@ jobs:
           
       - name: upload pre-release build
         if: steps.version-comparison.outputs.greater != 1
-        uses: actions/upload-artifact@4
+        uses: actions/upload-artifact@v4
         with:
           name: Recorder.dll
           path: ${{ env.DLLPath }}
