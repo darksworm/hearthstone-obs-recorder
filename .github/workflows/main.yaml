@@ -9,7 +9,7 @@ jobs:
       DLLPath: .\RecorderPlugin\bin\Release\RecorderPlugin.dll
       BuildDir: .\RecorderPlugin\bin\Release
       HDTDownloadURL: https://github.com/HearthSim/Hearthstone-Deck-Tracker/releases/download/v1.25.3/Hearthstone.Deck.Tracker-v1.25.3.zip
-      HDTZipName: Hearthstone.Deck.Tracker-v1.16.10.zip
+      HDTZipName: Hearthstone.Deck.Tracker-v1.25.3.zip
     steps:
       - uses: actions/checkout@v2
 
@@ -73,7 +73,7 @@ jobs:
           prerelease: false
 
       - name: upload release assets
-        if: steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
+        if: true || steps.previous-version.outcome == 'failure' || steps.version-comparison.outputs.greater == 1
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
